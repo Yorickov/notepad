@@ -31,4 +31,17 @@ class Note
   def time_string
     "Created at: #{@created_at.strftime('%d.%m.%Y, %H:%M:%S')} \n"
   end
+
+  def save_to_txt
+    File.open(file_path, 'w') { |file| to_array.each { |string| file.puts(string) } }
+  rescue RuntimeError => e
+    abort e.message
+  end
+
+  def file_path
+    dir = File.expand_path('../data', __dir__)
+    name_part = @created_at.strftime('%Y-%m-%d_%H-%M-%S')
+
+    "#{dir}/#{self.class.name}_#{name_part}.txt"
+  end
 end
