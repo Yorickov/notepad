@@ -5,10 +5,12 @@ require 'link'
 require 'memo'
 require 'task'
 require 'console_reader'
+require 'base_repository'
 
 class TestModels < Minitest::Test
   def setup
     @console_reader = ConsoleReader.new
+    @repository = BaseRepository.new
   end
 
   def test_note
@@ -32,7 +34,7 @@ class TestModels < Minitest::Test
     end
 
     link.stub(:file_path, path) do
-      link.save_to_txt
+      @repository.save_to_txt(link)
       file_content = File.read(path)
       assert(file_content.include?('some link'))
     end
@@ -49,7 +51,7 @@ class TestModels < Minitest::Test
     end
 
     memo.stub(:file_path, path) do
-      memo.save_to_txt
+      @repository.save_to_txt(memo)
       file_content = File.read(path)
       assert(file_content.include?('some memo'))
     end
@@ -66,7 +68,7 @@ class TestModels < Minitest::Test
     end
 
     task.stub(:file_path, path) do
-      task.save_to_txt
+      @repository.save_to_txt(task)
       file_content = File.read(path)
       assert(file_content.include?('Deadline: 12.05.2003'))
     end
