@@ -28,4 +28,8 @@ class Task < Note
 
     [deadline, @text, time_string]
   end
+
+  def to_hash
+    super.merge(text: @text, due_date: @due_date.to_s)
+  end
 end

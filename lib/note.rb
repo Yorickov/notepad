@@ -38,4 +38,8 @@ class Note
 
     "#{dir}/#{self.class.name}_#{name_part}.txt"
   end
+
+  def to_hash
+    { created_at: @created_at.to_s }
+  end
 end

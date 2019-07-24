@@ -10,4 +10,8 @@ class Link < Note
   def to_array
     [time_string, @url, @text]
   end
+
+  def to_hash
+    super.merge(text: @text, url: @url)
+  end
 end

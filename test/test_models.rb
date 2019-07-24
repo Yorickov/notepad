@@ -1,4 +1,7 @@
 require 'minitest/autorun'
+require 'rubygems'
+require 'bundler/setup'
+require 'sqlite3'
 
 require 'note'
 require 'link'
@@ -6,11 +9,24 @@ require 'memo'
 require 'task'
 require 'console_reader'
 require 'base_repository'
+require 'db_manager'
 
 class TestModels < Minitest::Test
   def setup
     @console_reader = ConsoleReader.new
-    @repository = BaseRepository.new
+    @repository = BaseRepository.new(':memory')
+
+    @db = DbManager.new.create_table(
+      ':memory',
+      'links',
+      created_at: 'datetime',
+      text: 'text',
+      url: 'text'
+    )
+  end
+
+  def teardown
+    SQLite3::Database.open(':memory') { |db| db.execute("DROP TABLE IF EXISTS 'links'") }
   end
 
   def test_note
@@ -38,6 +54,9 @@ class TestModels < Minitest::Test
       file_content = File.read(path)
       assert(file_content.include?('some link'))
     end
+
+    last_id = @repository.save_to_db(link)
+    assert_equal(1, last_id)
   end
 
   def test_memo

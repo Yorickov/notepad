@@ -8,4 +8,8 @@ class Memo < Note
   def to_array
     [time_string] + @text
   end
+
+  def to_hash
+    super.merge(text: @text.join('\n'))
+  end
 end
