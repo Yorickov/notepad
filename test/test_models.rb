@@ -15,13 +15,13 @@ require 'init_db'
 class TestModels < Minitest::Test
   def setup
     @console_reader = ConsoleReader.new
-    @repository = BaseRepository.new(':memory')
+    @repository = BaseRepository.new('test/tmp/memory')
 
-    init_db(':memory', DbManager.new)
+    init_db('test/tmp/memory', DbManager.new)
   end
 
   def teardown
-    SQLite3::Database.open(':memory') do |db|
+    SQLite3::Database.open('test/tmp/memory') do |db|
       db.execute('DROP TABLE IF EXISTS links')
       db.execute('DROP TABLE IF EXISTS memos')
       db.execute('DROP TABLE IF EXISTS tasks')
