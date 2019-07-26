@@ -32,4 +32,10 @@ class Task < Note
   def to_hash
     super.merge(text: @text, due_date: @due_date.to_s)
   end
+
+  def read_from_db(data)
+    super(data)
+
+    @due_date = Date.parse(data['due_date'])
+  end
 end

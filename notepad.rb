@@ -8,24 +8,24 @@ require_relative 'lib/models/link.rb'
 require_relative 'lib/models/memo.rb'
 require_relative 'lib/models/task.rb'
 
-require_relative 'lib/console_reader.rb'
+require_relative 'lib/console_reader'
 require_relative 'lib/base_repository'
 require_relative 'lib/db_manager'
 require_relative 'lib/init_db'
+require_relative 'lib/saver'
+require_relative 'lib/finder'
 
 db_path = './db/notepad.sqlite'
 
 init_db(db_path, DbManager.new)
 
 console_reader = ConsoleReader.new
-
 repository = BaseRepository.new(db_path)
 
 new_note = Note.create
-new_note.read_from_console(console_reader)
+mode_class = new_note.choose_mode
 
-puts repository.save_to_db(new_note)
+app = mode_class.new(new_note, repository, console_reader)
+app.start
 
 # repository.save_to_txt(new_note)
-
-puts 'Done!'

@@ -14,4 +14,10 @@ class Link < Note
   def to_hash
     super.merge(text: @text, url: @url)
   end
+
+  def read_from_db(data)
+    super
+
+    @url = data['url']
+  end
 end

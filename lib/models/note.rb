@@ -9,6 +9,25 @@ class Note
     { 'Memo' => Memo, 'Task' => Task, 'Link' => Link }
   end
 
+  def modes
+    { 'create' => Saver, 'find' => Finder }
+  end
+
+  def choose_mode
+    puts 'Enter mode - create note or find'
+
+    modes.keys.each_with_index do |action, index|
+      puts 'Enter index' \
+        "\t#{index}. #{action}"
+    end
+
+    choose_index = STDIN.gets.chomp.to_i
+    index = choose_index.between?(0, modes.size - 1) ? choose_index : choose_mode
+    mode = modes.keys[index]
+
+    modes[mode]
+  end
+
   def self.create(type = nil)
     return types[type].new if type
 
@@ -33,7 +52,7 @@ class Note
   end
 
   def file_path
-    dir = File.expand_path('../data', __dir__)
+    dir = File.expand_path('../..data', __dir__)
     name_part = @created_at.strftime('%Y-%m-%d_%H-%M-%S')
 
     "#{dir}/#{self.class.name}_#{name_part}.txt"
@@ -41,5 +60,14 @@ class Note
 
   def to_hash
     { created_at: @created_at.to_s }
+  end
+
+  def read_from_db(data)
+    @created_at = Time.parse(data['created_at'])
+    @text = data['text']
+  end
+
+  def to_s
+    to_hash.map { |index, item| puts "#{index}: #{item}" }
   end
 end

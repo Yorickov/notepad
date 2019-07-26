@@ -39,4 +39,55 @@ class BaseRepository
 
     last_id
   end
+
+  def find_by_id(id, base)
+    return if id.nil?
+
+    db = SQLite3::Database.open(@db_path)
+    db.results_as_hash = true
+
+    model_name = base.downcase + 's'
+    sql = "SELECT * FROM #{model_name} WHERE  rowid = ?"
+
+    begin
+      result = db.execute(sql, id)
+    rescue SQLite3::SQLException => e
+      puts "Failed query into #{@db_path}"
+      abort e.message
+    end
+
+    db.close
+
+    return nil if result.empty?
+
+    note = Note.create(base)
+    note.read_from_db(result[0])
+
+    note
+  end
+
+  def find_all(base)
+    db = SQLite3::Database.open(@db_path)
+    db.results_as_hash = true
+
+    model_name = base.downcase + 's'
+    sql = "SELECT * FROM #{model_name}"
+
+    begin
+      result = db.execute(sql)
+    rescue SQLite3::SQLException => e
+      puts "Failed query into #{@db_path}"
+      abort e.message
+    end
+
+    db.close
+
+    return nil if result.empty?
+
+    result.map do |i|
+      note = Note.create(base)
+      note.read_from_db(i)
+      note
+    end
+  end
 end

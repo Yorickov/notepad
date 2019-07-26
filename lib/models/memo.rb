@@ -12,4 +12,10 @@ class Memo < Note
   def to_hash
     super.merge(text: @text.join('\n'))
   end
+
+  def read_from_db(data)
+    super(data)
+
+    @text = data['text'].split('\n')
+  end
 end

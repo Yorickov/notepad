@@ -17,16 +17,16 @@ class TestModels < Minitest::Test
     @console_reader = ConsoleReader.new
     @repository = BaseRepository.new('test/tmp/memory')
 
-    init_db('test/tmp/memory', DbManager.new)
+    # init_db('test/tmp/memory', DbManager.new)
   end
 
-  def teardown
-    SQLite3::Database.open('test/tmp/memory') do |db|
-      db.execute('DROP TABLE IF EXISTS links')
-      db.execute('DROP TABLE IF EXISTS memos')
-      db.execute('DROP TABLE IF EXISTS tasks')
-    end
-  end
+  # def teardown
+  #   SQLite3::Database.open('test/tmp/memory') do |db|
+  #     db.execute('DROP TABLE IF EXISTS links')
+  #     db.execute('DROP TABLE IF EXISTS memos')
+  #     db.execute('DROP TABLE IF EXISTS tasks')
+  #   end
+  # end
 
   def test_note
     instance = Note.create('Link')
@@ -53,9 +53,6 @@ class TestModels < Minitest::Test
       file_content = File.read(path)
       assert(file_content.include?('some link'))
     end
-
-    last_id = @repository.save_to_db(link)
-    assert_equal(1, last_id)
   end
 
   def test_memo
@@ -73,9 +70,6 @@ class TestModels < Minitest::Test
       file_content = File.read(path)
       assert(file_content.include?('some memo'))
     end
-
-    last_id = @repository.save_to_db(memo)
-    assert_equal(1, last_id)
   end
 
   def test_task
@@ -94,7 +88,7 @@ class TestModels < Minitest::Test
       assert(file_content.include?('Deadline: 12.05.2003'))
     end
 
-    last_id = @repository.save_to_db(task)
-    assert_equal(1, last_id)
+    # last_id = @repository.save_to_db(task)
+    # assert_equal(1, last_id)
   end
 end
