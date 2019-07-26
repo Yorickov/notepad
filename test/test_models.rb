@@ -8,14 +8,14 @@ require 'models/link'
 require 'models/memo'
 require 'models/task'
 require 'console_reader'
-require 'base_repository'
+require 'repository'
 require 'db_manager'
 require 'init_db'
 
 class TestModels < Minitest::Test
   def setup
     @console_reader = ConsoleReader.new
-    @repository = BaseRepository.new('test/tmp/memory')
+    @repository = Repository.new('test/tmp/memory')
 
     # init_db('test/tmp/memory', DbManager.new)
   end

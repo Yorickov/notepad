@@ -1,11 +1,7 @@
-class Finder
-  def initialize(note, repository, _console_reader = nil)
-    @note = note
-    @repository = repository
-  end
-
+class Finder < ModeManager
   def start
     puts 'Enter id to find note OR nothing to find all notes'
+
     id = STDIN.gets.chomp
     if id == ''
       notes = @repository.find_all(@note.class.name)

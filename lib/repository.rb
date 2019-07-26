@@ -1,4 +1,4 @@
-class BaseRepository
+class Repository
   def initialize(db_path)
     @db_path = db_path
   end
@@ -23,40 +23,29 @@ class BaseRepository
     query(sql, note_hash.values)
   end
 
-  def query(sql, params)
+  def query(sql, params = nil)
     db = SQLite3::Database.open(@db_path)
     db.results_as_hash = true
 
     begin
-      db.execute(sql, params)
+      result = db.execute(sql, params)
     rescue SQLite3::SQLException => e
       puts "Failed query into #{@db_path}"
       abort e.message
     end
 
-    last_id = db.last_insert_row_id
     db.close
 
-    last_id
+    result
   end
 
   def find_by_id(id, base)
     return if id.nil?
 
-    db = SQLite3::Database.open(@db_path)
-    db.results_as_hash = true
-
     model_name = base.downcase + 's'
     sql = "SELECT * FROM #{model_name} WHERE  rowid = ?"
 
-    begin
-      result = db.execute(sql, id)
-    rescue SQLite3::SQLException => e
-      puts "Failed query into #{@db_path}"
-      abort e.message
-    end
-
-    db.close
+    result = query(sql, id)
 
     return nil if result.empty?
 
@@ -67,20 +56,10 @@ class BaseRepository
   end
 
   def find_all(base)
-    db = SQLite3::Database.open(@db_path)
-    db.results_as_hash = true
-
     model_name = base.downcase + 's'
     sql = "SELECT * FROM #{model_name}"
 
-    begin
-      result = db.execute(sql)
-    rescue SQLite3::SQLException => e
-      puts "Failed query into #{@db_path}"
-      abort e.message
-    end
-
-    db.close
+    result = query(sql)
 
     return nil if result.empty?
 
